@@ -81,6 +81,41 @@ namespace Files.App.UserControls.TabBar
 			yield return CommandItem(commands.CloseTabsToTheRightSelected);
 			yield return CommandItem(commands.CloseOtherTabsSelected);
 			yield return CommandItem(commands.ReopenClosedTab);
+
+			// Groups are only shown by the vertical tab bar
+			if (_contextMenuTarget is not TabBarItem tab || !Ioc.Default.GetRequiredService<IAppearanceSettingsService>().UseVerticalTabs)
+				yield break;
+
+			yield return new MenuFlyoutSeparator();
+
+			var addToNewGroup = new MenuFlyoutItem { Text = Strings.AddTabToNewGroup.GetLocalizedResource() };
+			addToNewGroup.Click += (_, _) => _ = TabGroup.AddToNewGroup(tab);
+			yield return addToNewGroup;
+
+			var otherGroups = TabGroup.AllGroups.Where(group => group != tab.Group).ToList();
+			if (otherGroups.Count > 0)
+			{
+				var addToGroup = new MenuFlyoutSubItem { Text = Strings.AddTabToGroup.GetLocalizedResource() };
+				foreach (var group in otherGroups)
+				{
+					var groupItem = new MenuFlyoutItem
+					{
+						Text = group.DisplayName,
+						Icon = new FontIcon { Glyph = "", Foreground = group.Brush },
+					};
+					groupItem.Click += (_, _) => TabGroup.AddToGroup(tab, group);
+					addToGroup.Items.Add(groupItem);
+				}
+
+				yield return addToGroup;
+			}
+
+			if (tab.Group is not null)
+			{
+				var removeFromGroup = new MenuFlyoutItem { Text = Strings.RemoveTabFromGroup.GetLocalizedResource() };
+				removeFromGroup.Click += (_, _) => TabGroup.RemoveFromGroup(tab);
+				yield return removeFromGroup;
+			}
 		}
 
 		private static IEnumerable<MenuFlyoutItemBase> CreateTabActionsItems()

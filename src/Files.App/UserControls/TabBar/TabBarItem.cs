@@ -54,6 +54,13 @@ namespace Files.App.UserControls.TabBar
 			set => SetProperty(ref _ToolTipText, value);
 		}
 
+		private TabGroup? _Group;
+		public TabGroup? Group
+		{
+			get => _Group;
+			set => SetProperty(ref _Group, value);
+		}
+
 		private bool _AllowStorageItemDrop;
 		public bool AllowStorageItemDrop
 		{

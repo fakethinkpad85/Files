@@ -41,6 +41,11 @@ namespace Files.App.Data.Contracts
 		List<string>? LastSessionTabList { get; set; }
 
 		/// <summary>
+		/// The tab group of each tab in <see cref="LastSessionTabList"/>, empty for ungrouped tabs.
+		/// </summary>
+		List<string>? LastSessionTabGroupList { get; set; }
+
+		/// <summary>
 		/// Gets or sets the index of the tab that was active when the last session ended.
 		/// </summary>
 		int LastSessionSelectedTabIndex { get; set; }

@@ -24,6 +24,7 @@
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="*" />
+			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 
 		<!--  Header  -->
@@ -32,6 +33,16 @@
 				<ColumnDefinition Width="Auto" />
 				<ColumnDefinition Width="*" />
 			</Grid.ColumnDefinitions>
+
+			<!--  Search open tabs by title and path  -->
+			<TextBox
+				x:Name="SearchBox"
+				Grid.Column="1"
+				VerticalAlignment="Center"
+				AutomationProperties.Name="{helpers:ResourceString Name=SearchTabs}"
+				KeyDown="SearchBox_KeyDown"
+				PlaceholderText="{helpers:ResourceString Name=SearchTabs}"
+				TextChanged="SearchBox_TextChanged" />
 
 			<!--  Tab actions  -->
 			<Button
@@ -49,20 +60,6 @@
 					Height="16"
 					Style="{StaticResource App.ThemedIcons.Panes.Single}" />
 			</Button>
-
-			<!--  New tab  -->
-			<Button
-				Grid.Column="1"
-				Height="30"
-				Padding="8"
-				HorizontalAlignment="Stretch"
-				AutomationProperties.Name="{x:Bind Commands.NewTab.AutomationName}"
-				Background="Transparent"
-				BorderThickness="0"
-				Command="{x:Bind Commands.NewTab}"
-				ToolTipService.ToolTip="{x:Bind Commands.NewTab.LabelWithHotKey, Mode=OneWay}">
-				<FontIcon FontSize="12" Glyph="&#xE710;" />
-			</Button>
 		</Grid>
 
 		<!--  Tabs  -->
@@ -73,64 +70,204 @@
 			AllowDrop="{x:Bind AllowTabsDrag, Mode=OneWay}"
 			CanDragItems="{x:Bind AllowTabsDrag, Mode=OneWay}"
 			CanReorderItems="{x:Bind AllowTabsDrag, Mode=OneWay}"
+			ContainerContentChanging="TabsList_ContainerContentChanging"
+			DragItemsCompleted="TabsList_DragItemsCompleted"
+			DragItemsStarting="TabsList_DragItemsStarting"
 			ItemsSource="{x:Bind Items, Mode=OneWay}"
 			SelectedIndex="{x:Bind root:App.AppModel.TabStripSelectedIndex, Mode=TwoWay}"
 			SelectionChanged="TabsList_SelectionChanged"
 			SelectionMode="Single">
+			<!--  Hover and selection are drawn on the tab row instead, so a group header above the tab is not highlighted with it  -->
+			<ListView.Resources>
+				<StaticResource x:Key="ListViewItemBackgroundPointerOver" ResourceKey="SubtleFillColorTransparentBrush" />
+				<StaticResource x:Key="ListViewItemBackgroundPressed" ResourceKey="SubtleFillColorTransparentBrush" />
+				<StaticResource x:Key="ListViewItemBackgroundSelected" ResourceKey="SubtleFillColorTransparentBrush" />
+				<StaticResource x:Key="ListViewItemBackgroundSelectedPointerOver" ResourceKey="SubtleFillColorTransparentBrush" />
+				<StaticResource x:Key="ListViewItemBackgroundSelectedPressed" ResourceKey="SubtleFillColorTransparentBrush" />
+				<x:Boolean x:Key="ListViewItemSelectionIndicatorVisualEnabled">False</x:Boolean>
+			</ListView.Resources>
 			<ListView.ItemContainerStyle>
 				<Style TargetType="ListViewItem">
 					<Setter Property="HorizontalContentAlignment" Value="Stretch" />
-					<Setter Property="MinHeight" Value="32" />
-					<Setter Property="Padding" Value="8,0,4,0" />
+					<Setter Property="MinHeight" Value="0" />
+					<Setter Property="Padding" Value="0" />
 				</Style>
 			</ListView.ItemContainerStyle>
 			<ListView.ItemTemplate>
 				<DataTemplate x:DataType="local:TabBarItem">
-					<Grid
-						ColumnSpacing="8"
-						ContextFlyout="{x:Bind local:TabBarFlyouts.TabContextFlyout}"
-						PointerPressed="TabItem_PointerPressed"
-						ToolTipService.ToolTip="{x:Bind ToolTipText, Mode=OneWay}">
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="Auto" />
-							<ColumnDefinition Width="*" />
-							<ColumnDefinition Width="Auto" />
-						</Grid.ColumnDefinitions>
+					<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+						</Grid.RowDefinitions>
 
-						<Viewbox
-							Width="16"
-							Height="16"
-							VerticalAlignment="Center">
-							<ContentControl Content="{x:Bind Icon, Mode=OneWay}" IsTabStop="False" />
-						</Viewbox>
-
-						<TextBlock
-							Grid.Column="1"
-							VerticalAlignment="Center"
-							Text="{x:Bind Header, Mode=OneWay}"
-							TextTrimming="CharacterEllipsis" />
-
-						<Button
-							Grid.Column="2"
-							Width="24"
-							Height="24"
-							Padding="0"
-							AutomationProperties.Name="{helpers:ResourceString Name=CloseTab}"
+						<!--  Group header, shown above the first tab of a group  -->
+						<Grid
+							x:Name="GroupHeader"
+							Height="32"
+							Padding="4,0,8,0"
 							Background="Transparent"
-							BorderThickness="0"
-							Click="CloseTabButton_Click"
-							ToolTipService.ToolTip="{helpers:ResourceString Name=CloseTab}">
-							<FontIcon FontSize="12" Glyph="&#xE8BB;" />
-						</Button>
+							ColumnSpacing="8"
+							PointerPressed="GroupHeader_PointerPressed"
+							RightTapped="GroupHeader_RightTapped"
+							ToolTipService.ToolTip="{x:Bind Group.DisplayName, Mode=OneWay}"
+							Visibility="Collapsed">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="*" />
+								<ColumnDefinition Width="Auto" />
+							</Grid.ColumnDefinitions>
+
+							<Border
+								MinWidth="16"
+								MinHeight="20"
+								Padding="8,0"
+								HorizontalAlignment="Left"
+								VerticalAlignment="Center"
+								Background="{x:Bind Group.Brush, Mode=OneWay}"
+								CornerRadius="{StaticResource ControlCornerRadius}">
+								<TextBlock
+									VerticalAlignment="Center"
+									FontWeight="SemiBold"
+									Foreground="Black"
+									Style="{StaticResource CaptionTextBlockStyle}"
+									Text="{x:Bind Group.Name, Mode=OneWay}"
+									TextTrimming="CharacterEllipsis" />
+							</Border>
+
+							<FontIcon
+								x:Name="GroupChevron"
+								Grid.Column="1"
+								FontSize="10"
+								Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+								Glyph="&#xE70D;" />
+						</Grid>
+
+						<!--  Tab  -->
+						<Grid
+							x:Name="TabRow"
+							Grid.Row="1"
+							Height="32"
+							Padding="8,0,4,0"
+							AllowDrop="True"
+							Background="Transparent"
+							ColumnSpacing="8"
+							ContextFlyout="{x:Bind local:TabBarFlyouts.TabContextFlyout}"
+							CornerRadius="{StaticResource ControlCornerRadius}"
+							DragEnter="TabRow_DragEnter"
+							DragLeave="TabRow_DragLeave"
+							Drop="TabRow_Drop"
+							PointerEntered="TabItem_PointerEntered"
+							PointerExited="TabItem_PointerExited"
+							PointerPressed="TabItem_PointerPressed"
+							ToolTipService.ToolTip="{x:Bind ToolTipText, Mode=OneWay}">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="Auto" />
+								<ColumnDefinition Width="*" />
+								<ColumnDefinition Width="Auto" />
+							</Grid.ColumnDefinitions>
+
+							<!--  Group color  -->
+							<Border
+								x:Name="GroupBar"
+								Width="3"
+								Margin="-6,8,0,8"
+								HorizontalAlignment="Left"
+								Background="{x:Bind Group.Brush, Mode=OneWay}"
+								CornerRadius="2"
+								Visibility="Collapsed" />
+
+							<Viewbox
+								Width="16"
+								Height="16"
+								VerticalAlignment="Center">
+								<ContentControl Content="{x:Bind Icon, Mode=OneWay}" IsTabStop="False" />
+							</Viewbox>
+
+							<TextBlock
+								Grid.Column="1"
+								VerticalAlignment="Center"
+								Text="{x:Bind Header, Mode=OneWay}"
+								TextTrimming="CharacterEllipsis" />
+
+							<Button
+								x:Name="CloseTabButton"
+								Grid.Column="2"
+								Width="20"
+								Height="20"
+								Padding="0"
+								IsHitTestVisible="False"
+								Opacity="0"
+								AutomationProperties.Name="{helpers:ResourceString Name=CloseTab}"
+								Background="Transparent"
+								BorderThickness="0"
+								Click="CloseTabButton_Click"
+								ToolTipService.ToolTip="{helpers:ResourceString Name=CloseTab}">
+								<FontIcon FontSize="10" Glyph="&#xE8BB;" />
+							</Button>
+
+							<!--  Shown when holding a dragged tab over this one, where a drop groups the two  -->
+							<Border
+								x:Name="GroupDropHint"
+								Grid.ColumnSpan="3"
+								Margin="-8,0,-4,0"
+								Padding="8,0"
+								Background="{ThemeResource SolidBackgroundFillColorTertiaryBrush}"
+								BorderBrush="{ThemeResource AccentFillColorDefaultBrush}"
+								BorderThickness="2"
+								CornerRadius="{StaticResource ControlCornerRadius}"
+								Visibility="Collapsed">
+								<TextBlock
+									x:Name="GroupDropHintText"
+									VerticalAlignment="Center"
+									Style="{StaticResource CaptionTextBlockStyle}"
+									TextTrimming="CharacterEllipsis" />
+							</Border>
+						</Grid>
 					</Grid>
 				</DataTemplate>
 			</ListView.ItemTemplate>
 		</ListView>
 
+		<!--  New tab, below the tabs like in Edge  -->
+		<Button
+			Grid.Row="2"
+			Height="36"
+			Margin="4,0,4,8"
+			Padding="12,0"
+			HorizontalAlignment="Stretch"
+			HorizontalContentAlignment="Stretch"
+			AutomationProperties.Name="{x:Bind Commands.NewTab.AutomationName}"
+			Background="Transparent"
+			BorderThickness="0"
+			Command="{x:Bind Commands.NewTab}"
+			ToolTipService.ToolTip="{x:Bind Commands.NewTab.LabelWithHotKey, Mode=OneWay}">
+			<Grid ColumnSpacing="12">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="Auto" />
+				</Grid.ColumnDefinitions>
+				<FontIcon
+					VerticalAlignment="Center"
+					FontSize="12"
+					Glyph="&#xE710;" />
+				<TextBlock
+					Grid.Column="1"
+					VerticalAlignment="Center"
+					Text="{x:Bind Commands.NewTab.Label, Mode=OneWay}"
+					TextTrimming="CharacterEllipsis" />
+				<TextBlock
+					Grid.Column="2"
+					VerticalAlignment="Center"
+					Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+					Text="{x:Bind Commands.NewTab.HotKeys.LocalizedLabel, Mode=OneWay}" />
+			</Grid>
+		</Button>
+
 		<!--  Resizer  -->
 		<Border
 			x:Name="PaneResizer"
-			Grid.RowSpan="2"
+			Grid.RowSpan="3"
 			Grid.Column="1"
 			Background="Transparent"
 			ManipulationCompleted="PaneResizer_ManipulationCompleted"

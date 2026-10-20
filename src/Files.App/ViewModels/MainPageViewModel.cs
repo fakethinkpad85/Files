@@ -382,6 +382,9 @@ namespace Files.App.ViewModels
 			if (sessionTabs is null || sessionTabs.Count == 0)
 				return;
 
+			// Read before adding tabs: navigating a restored tab saves the session, which would overwrite the groups.
+			var sessionGroups = UserSettingsService.GeneralSettingsService.LastSessionTabGroupList?.ToList();
+
 			var savedIndex = UserSettingsService.GeneralSettingsService.LastSessionSelectedTabIndex;
 			if (savedIndex < 0 || savedIndex >= sessionTabs.Count)
 				savedIndex = sessionTabs.Count - 1;
@@ -406,6 +409,8 @@ namespace Files.App.ViewModels
 				AppInstances.Move(0, savedIndex);
 				App.AppModel.TabStripSelectedIndex = savedIndex;
 			}
+
+			TabGroup.RestoreSession(sessionGroups);
 		}
 
 		// Command methods

@@ -53,6 +53,12 @@ namespace Files.App.Services.Settings
 			set => Set(value);
 		}
 
+		public List<string>? LastSessionTabGroupList
+		{
+			get => Get<List<string>>(null);
+			set => Set(value);
+		}
+
 		public int LastSessionSelectedTabIndex
 		{
 			get => Get(-1);

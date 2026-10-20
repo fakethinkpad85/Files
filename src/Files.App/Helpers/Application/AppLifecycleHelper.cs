@@ -426,6 +426,10 @@ namespace Files.App.Helpers
 			})
 			.ToList();
 
+			userSettingsService.GeneralSettingsService.LastSessionTabGroupList = MainPageViewModel.AppInstances.DefaultIfEmpty()
+				.Select(tab => tab?.Group?.Serialize() ?? "")
+				.ToList();
+
 			userSettingsService.GeneralSettingsService.LastSessionSelectedTabIndex = App.AppModel.TabStripSelectedIndex;
 		}
 

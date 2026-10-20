@@ -4746,4 +4746,31 @@
   <data name="HideClosedSidebar" xml:space="preserve">
     <value>Hide sidebar when closed</value>
   </data>
+  <data name="AddTabToNewGroup" xml:space="preserve">
+    <value>Add tab to new group</value>
+  </data>
+  <data name="AddTabToGroup" xml:space="preserve">
+    <value>Add tab to group</value>
+  </data>
+  <data name="RemoveTabFromGroup" xml:space="preserve">
+    <value>Remove from group</value>
+  </data>
+  <data name="NameThisGroup" xml:space="preserve">
+    <value>Name this group</value>
+  </data>
+  <data name="UngroupTabs" xml:space="preserve">
+    <value>Ungroup</value>
+  </data>
+  <data name="CloseTabGroup" xml:space="preserve">
+    <value>Close group</value>
+  </data>
+  <data name="SearchTabs" xml:space="preserve">
+    <value>Search tabs</value>
+  </data>
+  <data name="DropToCreateTabGroup" xml:space="preserve">
+    <value>Drop to create group</value>
+  </data>
+  <data name="DropToAddToTabGroup" xml:space="preserve">
+    <value>Drop to add to group</value>
+  </data>
 </root>

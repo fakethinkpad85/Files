@@ -123,7 +123,7 @@ namespace Files.App.UserControls.TabBar
 		private void TabsList_ContainerContentChanging(ListViewBase sender, ContainerContentChangingEventArgs args)
 		{
 			if (args.ItemContainer is ListViewItem container && args.Item is TabBarItem item)
-				UpdateTab(container, item, args.ItemIndex);
+				UpdateTab(container, item);
 		}
 
 		[DynamicWindowsRuntimeCast(typeof(FrameworkElement))]
@@ -147,7 +147,7 @@ namespace Files.App.UserControls.TabBar
 			for (var i = 0; i < Items.Count; i++)
 			{
 				if (TabsList.ContainerFromIndex(i) is ListViewItem container)
-					UpdateTab(container, Items[i], i);
+					UpdateTab(container, Items[i]);
 			}
 		}
 
@@ -155,9 +155,12 @@ namespace Files.App.UserControls.TabBar
 		/// Shows the group header above the first tab of a group, hides the tabs of a collapsed group and tabs
 		/// that do not match the search, and draws hover and selection on the tab row.
 		/// </summary>
-		private void UpdateTab(ListViewItem container, TabBarItem item, int index)
+		private void UpdateTab(ListViewItem container, TabBarItem item)
 		{
-			if (container.ContentTemplateRoot is not FrameworkElement root ||
+			// The list reports containers for tabs that are already removed, e.g. while all tabs are cleared on close
+			var index = Items.IndexOf(item);
+			if (index < 0 ||
+				container.ContentTemplateRoot is not FrameworkElement root ||
 				root.FindName("GroupHeader") is not FrameworkElement groupHeader ||
 				root.FindName("GroupChevron") is not FontIcon groupChevron ||
 				root.FindName("GroupBar") is not FrameworkElement groupBar ||

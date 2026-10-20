@@ -224,6 +224,11 @@ namespace Files.App.UserControls.TabBar
 				}
 			}
 
+			// The selected tab was restored before its group, so a collapsed group would hide it
+			var selectedIndex = App.AppModel.TabStripSelectedIndex;
+			if (selectedIndex >= 0 && selectedIndex < Tabs.Count && Tabs[selectedIndex].Group is TabGroup selectedGroup)
+				selectedGroup._IsCollapsed = false;
+
 			NotifyGroupsChanged();
 		}
 

@@ -38,6 +38,12 @@ namespace Files.App.Services.Settings
 			set => Set(value);
 		}
 
+		public bool HideClosedSidebar
+		{
+			get => Get(false);
+			set => Set(value);
+		}
+
 		/// <inheritdoc/>
 		public string AppThemeMode
 		{

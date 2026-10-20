@@ -520,6 +520,21 @@
 						Value="{x:Bind ViewModel.UpdateProgress, Mode=OneWay}" />
 				</Grid>
 			</Button>
+
+			<!--  Settings, shown while the sidebar and its footer are hidden  -->
+			<Button
+				x:Name="SettingsButton"
+				Padding="0"
+				x:Load="{x:Bind ShowSettingsButton, Mode=OneWay}"
+				AutomationProperties.Name="{x:Bind Commands.OpenSettings.Label, Mode=OneWay}"
+				Command="{x:Bind Commands.OpenSettings, Mode=OneWay}"
+				Style="{StaticResource AddressToolbarButtonStyle}"
+				ToolTipService.ToolTip="{x:Bind Commands.OpenSettings.LabelWithHotKey, Mode=OneWay}">
+				<controls:ThemedIcon
+					Width="16"
+					Height="16"
+					Style="{StaticResource App.ThemedIcons.Settings}" />
+			</Button>
 		</StackPanel>
 
 		<!--  Status Center TeachingTip  -->
@@ -581,6 +596,14 @@
 				<VisualState x:Name="UpdateButtonVisible">
 					<VisualState.StateTriggers>
 						<triggers:IsEqualStateTrigger Value="{x:Bind ViewModel.IsUpdateAvailable, Mode=OneWay}" To="True" />
+					</VisualState.StateTriggers>
+					<VisualState.Setters>
+						<Setter Target="RightSideActionsStackPanel.Margin" Value="0,0,4,0" />
+					</VisualState.Setters>
+				</VisualState>
+				<VisualState x:Name="SettingsButtonVisible">
+					<VisualState.StateTriggers>
+						<triggers:IsEqualStateTrigger Value="{x:Bind ShowSettingsButton, Mode=OneWay}" To="True" />
 					</VisualState.StateTriggers>
 					<VisualState.Setters>
 						<Setter Target="RightSideActionsStackPanel.Margin" Value="0,0,4,0" />

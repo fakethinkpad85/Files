@@ -437,6 +437,18 @@
 					<VisualState.Setters>
 						<Setter Target="SidebarControl.DisplayMode" Value="Minimal" />
 						<Setter Target="NavToolbar.IsSidebarPaneOpenToggleButtonVisible" Value="True" />
+						<Setter Target="NavToolbar.ShowSettingsButton" Value="True" />
+					</VisualState.Setters>
+				</VisualState>
+				<!--  StateTrigger outranks the width triggers, so this wins at any window width  -->
+				<VisualState x:Name="HiddenSidebarState">
+					<VisualState.StateTriggers>
+						<StateTrigger IsActive="{x:Bind SidebarAdaptiveViewModel.IsSidebarHidden, Mode=OneWay}" />
+					</VisualState.StateTriggers>
+					<VisualState.Setters>
+						<Setter Target="SidebarControl.DisplayMode" Value="Minimal" />
+						<Setter Target="NavToolbar.IsSidebarPaneOpenToggleButtonVisible" Value="True" />
+						<Setter Target="NavToolbar.ShowSettingsButton" Value="True" />
 					</VisualState.Setters>
 				</VisualState>
 				<VisualState x:Name="MinimalSidebarState">

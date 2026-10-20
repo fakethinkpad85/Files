@@ -42,7 +42,7 @@ namespace Files.App.Actions
 			=> AppearanceSettingsService.IsSidebarOpen;
 
 		public bool IsExecutable
-			=> SidebarViewModel.ActualDisplayMode != SidebarDisplayMode.Minimal;
+			=> SidebarViewModel.ActualDisplayMode != SidebarDisplayMode.Minimal || SidebarViewModel.IsSidebarHidden;
 
 		public ToggleSidebarAction()
 		{
@@ -66,7 +66,7 @@ namespace Files.App.Actions
 
 		private void SidebarViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
 		{
-			if (e.PropertyName is nameof(SidebarViewModel.ActualDisplayMode))
+			if (e.PropertyName is nameof(SidebarViewModel.ActualDisplayMode) or nameof(SidebarViewModel.IsSidebarHidden))
 				OnPropertyChanged(nameof(IsExecutable));
 		}
 	}

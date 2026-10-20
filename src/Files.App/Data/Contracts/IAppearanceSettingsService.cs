@@ -25,6 +25,11 @@ namespace Files.App.Data.Contracts
 		/// </summary>
 		bool IsSidebarOpen { get; set; }
 
+		/// <summary>
+		/// Gets or sets a value indicating whether the closed sidebar is hidden instead of shown as an icon strip.
+		/// </summary>
+		bool HideClosedSidebar { get; set; }
+
 		#endregion
 
 		/// <summary>

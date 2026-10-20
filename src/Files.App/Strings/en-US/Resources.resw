@@ -4743,4 +4743,7 @@
   <data name="UseVerticalTabs" xml:space="preserve">
     <value>Use vertical tabs</value>
   </data>
+  <data name="HideClosedSidebar" xml:space="preserve">
+    <value>Hide sidebar when closed</value>
+  </data>
 </root>

@@ -261,6 +261,17 @@
 					IsOn="{x:Bind ViewModel.UseVerticalTabs, Mode=TwoWay}" />
 			</wctcontrols:SettingsCard>
 
+			<!--  Hide closed sidebar  -->
+			<wctcontrols:SettingsCard Header="{helpers:ResourceString Name=HideClosedSidebar}">
+				<wctcontrols:SettingsCard.HeaderIcon>
+					<FontIcon Glyph="&#xE700;" />
+				</wctcontrols:SettingsCard.HeaderIcon>
+				<ToggleSwitch
+					AutomationProperties.AutomationControlType="Custom"
+					AutomationProperties.Name="{helpers:ResourceString Name=HideClosedSidebar}"
+					IsOn="{x:Bind ViewModel.HideClosedSidebar, Mode=TwoWay}" />
+			</wctcontrols:SettingsCard>
+
 			<!--  Toolbar  -->
 			<wctcontrols:SettingsExpander Header="{helpers:ResourceString Name=AddressBar}">
 				<wctcontrols:SettingsExpander.HeaderIcon>

@@ -64,6 +64,7 @@ namespace Files.App.ViewModels.UserControls
 				{
 					OnPropertyChanged(nameof(IsSidebarCompactSize));
 					OnPropertyChanged(nameof(AreSectionsHidden));
+					OnPropertyChanged(nameof(IsSidebarHidden));
 					IsSidebarOpen = sidebarDisplayMode == SidebarDisplayMode.Expanded;
 					UpdateTabControlMargin();
 				}
@@ -188,6 +189,12 @@ namespace Files.App.ViewModels.UserControls
 				OnPropertyChanged();
 			}
 		}
+
+		/// <summary>
+		/// Gets a value indicating whether the closed sidebar is hidden, which puts SidebarView in Minimal mode.
+		/// </summary>
+		public bool IsSidebarHidden
+			=> UserSettingsService.AppearanceSettingsService.HideClosedSidebar && SidebarDisplayMode == SidebarDisplayMode.Compact;
 
 		public bool AreSectionsHidden =>
 			!ShowPinnedFoldersSection &&
@@ -676,6 +683,9 @@ namespace Files.App.ViewModels.UserControls
 					{
 						OnPropertyChanged(nameof(IsSidebarOpen));
 					}
+					break;
+				case nameof(UserSettingsService.AppearanceSettingsService.HideClosedSidebar):
+					OnPropertyChanged(nameof(IsSidebarHidden));
 					break;
 				case nameof(UserSettingsService.GeneralSettingsService.ShowPinnedSection):
 					await UpdateSectionVisibilityAsync(SectionType.Pinned, ShowPinnedFoldersSection);

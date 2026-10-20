@@ -406,6 +406,20 @@ namespace Files.App.ViewModels.Settings
 			}
 		}
 
+		public bool HideClosedSidebar
+		{
+			get => UserSettingsService.AppearanceSettingsService.HideClosedSidebar;
+			set
+			{
+				if (value != UserSettingsService.AppearanceSettingsService.HideClosedSidebar)
+				{
+					UserSettingsService.AppearanceSettingsService.HideClosedSidebar = value;
+
+					OnPropertyChanged();
+				}
+			}
+		}
+
 		public bool ShowShelfPaneToggleButton
 		{
 			get => UserSettingsService.AppearanceSettingsService.ShowShelfPaneToggleButton;

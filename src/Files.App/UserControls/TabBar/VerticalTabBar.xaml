@@ -105,7 +105,7 @@
 						<Grid
 							x:Name="GroupHeader"
 							Height="32"
-							Padding="4,0,8,0"
+							Padding="8,0,8,0"
 							Background="Transparent"
 							ColumnSpacing="8"
 							PointerPressed="GroupHeader_PointerPressed"
@@ -142,6 +142,16 @@
 								Glyph="&#xE70D;" />
 						</Grid>
 
+						<!--  Group color, in the indent of grouped tabs; rows touch so the bars join into one line  -->
+						<Border
+							x:Name="GroupBar"
+							Grid.Row="1"
+							Width="2"
+							Margin="9,0,0,0"
+							HorizontalAlignment="Left"
+							Background="{x:Bind Group.Brush, Mode=OneWay}"
+							Visibility="Collapsed" />
+
 						<!--  Tab  -->
 						<Grid
 							x:Name="TabRow"
@@ -165,16 +175,6 @@
 								<ColumnDefinition Width="*" />
 								<ColumnDefinition Width="Auto" />
 							</Grid.ColumnDefinitions>
-
-							<!--  Group color  -->
-							<Border
-								x:Name="GroupBar"
-								Width="3"
-								Margin="-6,8,0,8"
-								HorizontalAlignment="Left"
-								Background="{x:Bind Group.Brush, Mode=OneWay}"
-								CornerRadius="2"
-								Visibility="Collapsed" />
 
 							<Viewbox
 								Width="16"

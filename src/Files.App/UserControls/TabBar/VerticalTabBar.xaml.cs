@@ -187,7 +187,10 @@ namespace Files.App.UserControls.TabBar
 
 			groupHeader.Visibility = showHeader ? Visibility.Visible : Visibility.Collapsed;
 			groupChevron.Glyph = group is { IsCollapsed: true } ? "\uE76C" : "\uE70D";
-			groupBar.Visibility = group is not null ? Visibility.Visible : Visibility.Collapsed;
+			// Grouped tabs are indented under the header, which lines up with the ungrouped tabs
+			var isIndented = group is not null && !isSearching;
+			tabRow.Margin = isIndented ? new Thickness(16, 0, 0, 0) : default;
+			groupBar.Visibility = isIndented && showTab ? Visibility.Visible : Visibility.Collapsed;
 			tabRow.Visibility = showTab ? Visibility.Visible : Visibility.Collapsed;
 			container.Visibility = showTab || showHeader ? Visibility.Visible : Visibility.Collapsed;
 

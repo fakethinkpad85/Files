@@ -4773,4 +4773,7 @@
   <data name="DropToAddToTabGroup" xml:space="preserve">
     <value>Drop to add to group</value>
   </data>
+  <data name="ShowFilesInAddressBarSuggestions" xml:space="preserve">
+    <value>Show files in suggestions</value>
+  </data>
 </root>

@@ -44,6 +44,12 @@ namespace Files.App.Services.Settings
 			set => Set(value);
 		}
 
+		public bool ShowFilesInAddressBarSuggestions
+		{
+			get => Get(true);
+			set => Set(value);
+		}
+
 		/// <inheritdoc/>
 		public string AppThemeMode
 		{

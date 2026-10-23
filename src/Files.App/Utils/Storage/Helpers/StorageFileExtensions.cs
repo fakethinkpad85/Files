@@ -263,6 +263,18 @@ namespace Files.App.Utils.Storage
 			(this StorageFolderWithPath parentFolder, uint maxNumberOfItems = uint.MaxValue)
 				=> (await parentFolder.Item!.GetFilesAsync(CommonFileQuery.DefaultQuery, 0, maxNumberOfItems))
 					.Select(x => new StorageFileWithPath(x, string.IsNullOrEmpty(x.Path) ? PathNormalization.Combine(parentFolder.Path, x.Name) : x.Path)).ToList();
+		public async static Task<IList<StorageFileWithPath>> GetFilesWithPathAsync
+			(this StorageFolderWithPath parentFolder, string nameFilter, uint maxNumberOfItems = uint.MaxValue)
+		{
+			var queryOptions = new QueryOptions
+			{
+				ApplicationSearchFilter = $"System.FileName:{nameFilter}*"
+			};
+			BaseStorageFileQueryResult queryResult = parentFolder.Item!.CreateFileQueryWithOptions(queryOptions);
+
+			return (await queryResult.GetFilesAsync(0, maxNumberOfItems))
+				.Select(x => new StorageFileWithPath(x, string.IsNullOrEmpty(x.Path) ? PathNormalization.Combine(parentFolder.Path, x.Name) : x.Path)).ToList();
+		}
 
 		public async static Task<BaseStorageFolder?> DangerousGetFolderFromPathAsync
 			(string value, StorageFolderWithPath? rootFolder = null, StorageFolderWithPath? parentFolder = null)

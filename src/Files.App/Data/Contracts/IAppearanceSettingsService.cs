@@ -30,6 +30,11 @@ namespace Files.App.Data.Contracts
 		/// </summary>
 		bool HideClosedSidebar { get; set; }
 
+		/// <summary>
+		/// Gets or sets a value indicating whether the address bar suggests files as well as folders.
+		/// </summary>
+		bool ShowFilesInAddressBarSuggestions { get; set; }
+
 		#endregion
 
 		/// <summary>

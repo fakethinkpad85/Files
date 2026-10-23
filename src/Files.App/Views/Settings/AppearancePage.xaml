@@ -294,6 +294,11 @@
 							ItemsSource="{x:Bind ViewModel.StatusCenterVisibilityOptions.Values}"
 							SelectedItem="{x:Bind ViewModel.SelectedStatusCenterVisibilityOption, Mode=TwoWay}" />
 					</wctcontrols:SettingsCard>
+
+					<!--  Show files in suggestions  -->
+					<wctcontrols:SettingsCard Header="{helpers:ResourceString Name=ShowFilesInAddressBarSuggestions}">
+						<ToggleSwitch AutomationProperties.Name="{helpers:ResourceString Name=ShowFilesInAddressBarSuggestions}" IsOn="{x:Bind ViewModel.ShowFilesInAddressBarSuggestions, Mode=TwoWay}" />
+					</wctcontrols:SettingsCard>
 				</wctcontrols:SettingsExpander.Items>
 			</wctcontrols:SettingsExpander>
 

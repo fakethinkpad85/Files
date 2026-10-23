@@ -406,6 +406,20 @@ namespace Files.App.ViewModels.Settings
 			}
 		}
 
+		public bool ShowFilesInAddressBarSuggestions
+		{
+			get => UserSettingsService.AppearanceSettingsService.ShowFilesInAddressBarSuggestions;
+			set
+			{
+				if (value != UserSettingsService.AppearanceSettingsService.ShowFilesInAddressBarSuggestions)
+				{
+					UserSettingsService.AppearanceSettingsService.ShowFilesInAddressBarSuggestions = value;
+
+					OnPropertyChanged();
+				}
+			}
+		}
+
 		public bool HideClosedSidebar
 		{
 			get => UserSettingsService.AppearanceSettingsService.HideClosedSidebar;

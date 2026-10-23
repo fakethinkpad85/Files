@@ -25,6 +25,9 @@ namespace Files.App.ViewModels.UserControls
 
 		private const int MaxSuggestionsCount = 10;
 
+		// Higher than for folders, since arrowing through a folder's files is a way to pick and copy a file path
+		private const int MaxFileSuggestionsCount = 100;
+
 		public const string OmnibarPathModeName = "OmnibarPathMode";
 		public const string OmnibarPaletteModeName = "OmnibarCommandPaletteMode";
 		public const string OmnibarSearchModeName = "OmnibarSearchMode";
@@ -1022,9 +1025,16 @@ namespace Files.App.ViewModels.UserControls
 						return false;
 
 					var currPath = (await folder.GetFoldersWithPathAsync(Path.GetFileName(expandedPath), MaxSuggestionsCount))!;
+
+					// Files follow the folders, as in File Explorer; choosing one opens it
+					var files = UserSettingsService.AppearanceSettingsService.ShowFilesInAddressBarSuggestions
+						? await folder.GetFilesWithPathAsync(Path.GetFileName(expandedPath), MaxFileSuggestionsCount)
+						: [];
+
 					if (currPath.Count >= MaxSuggestionsCount)
 					{
 						newSuggestions.AddRange(currPath.Select(CreateSuggestion));
+						newSuggestions.AddRange(files.Select(file => new OmnibarPathModeSuggestionModel(file.Path, file.Item!.Name)));
 					}
 					else if (currPath.Any())
 					{
@@ -1032,9 +1042,14 @@ namespace Files.App.ViewModels.UserControls
 						var subPath = await firstPath.GetFoldersWithPathAsync((uint)(MaxSuggestionsCount - currPath.Count));
 						var firstDisplayName = firstPath.Item!.DisplayName;
 						newSuggestions.AddRange(currPath.Select(CreateSuggestion));
+						newSuggestions.AddRange(files.Select(file => new OmnibarPathModeSuggestionModel(file.Path, file.Item!.Name)));
 						newSuggestions.AddRange(subPath.Select(x => new OmnibarPathModeSuggestionModel(
 							x.Path,
 							PathNormalization.Combine(firstDisplayName, x.Item!.DisplayName))));
+					}
+					else
+					{
+						newSuggestions.AddRange(files.Select(file => new OmnibarPathModeSuggestionModel(file.Path, file.Item!.Name)));
 					}
 				}
 

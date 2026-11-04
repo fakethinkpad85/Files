@@ -238,6 +238,9 @@ namespace Files.App.ViewModels
 					case nameof(AppearanceSettingsService.UseVerticalTabs):
 						NotifyTabBarLayoutChanged();
 						break;
+					case nameof(AppearanceSettingsService.ShowParentFolderInTabs):
+						NavigationHelpers.RefreshTabPathHints();
+						break;
 					case nameof(AppearanceSettingsService.ShowToolbar):
 						OnPropertyChanged(nameof(ShowToolbar));
 						break;

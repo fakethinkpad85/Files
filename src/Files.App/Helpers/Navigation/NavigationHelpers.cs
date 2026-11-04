@@ -165,30 +165,53 @@ namespace Files.App.Helpers
 
 		internal static void RefreshTabPathHints()
 		{
+			// With the setting on, every folder tab is titled "Parent\Folder", and a duplicate title takes the next ancestor
+			var showParentFolder = Ioc.Default.GetRequiredService<IUserSettingsService>().AppearanceSettingsService.ShowParentFolderInTabs;
+
 			foreach (var group in MainPageViewModel.AppInstances
 				.Where(t => !string.IsNullOrEmpty(t.Description))
-				.GroupBy(t => t.Description!, StringComparer.OrdinalIgnoreCase))
+				.Select(t => (Tab: t, Title: showParentFolder ? WithParentFolder(t) : t.Description!))
+				.GroupBy(t => t.Title, StringComparer.OrdinalIgnoreCase))
 			{
 				var tabs = group.ToArray();
 
-				foreach (var t in tabs)
-					t.Header = t.Description;
+				foreach (var (tab, title) in tabs)
+					tab.Header = title;
 
-				if (tabs.Length < 2 || tabs[0].Description!.Contains(" | "))
+				if (tabs.Length < 2 || tabs[0].Tab.Description!.Contains(" | "))
 					continue;
 
-				var hints = tabs.ToDictionary(t => t, t => AncestorHints(t.ToolTipText));
+				var hints = tabs.ToDictionary(t => t.Tab, t => AncestorHints(t.Tab.ToolTipText));
 
-				foreach (var tab in tabs)
+				// The parent is already in the title, so the hint starts one level further up
+				var firstHint = showParentFolder ? 1 : 0;
+				foreach (var (tab, title) in tabs)
 				{
-					for (var d = 0; d < hints[tab].Length; d++)
+					for (var d = firstHint; d < hints[tab].Length; d++)
 					{
-						if (tabs.All(t => t == tab || d >= hints[t].Length || hints[t][d] != hints[tab][d]))
+						if (tabs.All(t => t.Tab == tab || d >= hints[t.Tab].Length || hints[t.Tab][d] != hints[tab][d]))
 						{
-							tab.Header = $"{hints[tab][d]}\\{tab.Description}";
+							tab.Header = $"{hints[tab][d]}\\{title}";
 							break;
 						}
 					}
+				}
+			}
+
+			static string WithParentFolder(TabBarItem tab)
+			{
+				if (tab.Description!.Contains(" | "))
+					return tab.Description;
+
+				try
+				{
+					var parent = Path.GetDirectoryName(tab.ToolTipText?.TrimEnd('\\', '/'));
+					var parentName = Path.GetFileName(parent);
+					return string.IsNullOrEmpty(parentName) ? tab.Description : $"{parentName}\\{tab.Description}";
+				}
+				catch (ArgumentException)
+				{
+					return tab.Description;
 				}
 			}
 		}

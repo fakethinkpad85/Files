@@ -50,6 +50,12 @@ namespace Files.App.Services.Settings
 			set => Set(value);
 		}
 
+		public bool ShowParentFolderInTabs
+		{
+			get => Get(false);
+			set => Set(value);
+		}
+
 		/// <inheritdoc/>
 		public string AppThemeMode
 		{

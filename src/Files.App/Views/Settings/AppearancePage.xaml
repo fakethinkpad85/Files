@@ -261,6 +261,17 @@
 					IsOn="{x:Bind ViewModel.UseVerticalTabs, Mode=TwoWay}" />
 			</wctcontrols:SettingsCard>
 
+			<!--  Show parent folder in tab titles  -->
+			<wctcontrols:SettingsCard Header="{helpers:ResourceString Name=ShowParentFolderInTabs}">
+				<wctcontrols:SettingsCard.HeaderIcon>
+					<FontIcon Glyph="&#xE8B7;" />
+				</wctcontrols:SettingsCard.HeaderIcon>
+				<ToggleSwitch
+					AutomationProperties.AutomationControlType="Custom"
+					AutomationProperties.Name="{helpers:ResourceString Name=ShowParentFolderInTabs}"
+					IsOn="{x:Bind ViewModel.ShowParentFolderInTabs, Mode=TwoWay}" />
+			</wctcontrols:SettingsCard>
+
 			<!--  Hide closed sidebar  -->
 			<wctcontrols:SettingsCard Header="{helpers:ResourceString Name=HideClosedSidebar}">
 				<wctcontrols:SettingsCard.HeaderIcon>

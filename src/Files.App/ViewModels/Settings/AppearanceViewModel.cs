@@ -406,6 +406,20 @@ namespace Files.App.ViewModels.Settings
 			}
 		}
 
+		public bool ShowParentFolderInTabs
+		{
+			get => UserSettingsService.AppearanceSettingsService.ShowParentFolderInTabs;
+			set
+			{
+				if (value != UserSettingsService.AppearanceSettingsService.ShowParentFolderInTabs)
+				{
+					UserSettingsService.AppearanceSettingsService.ShowParentFolderInTabs = value;
+
+					OnPropertyChanged();
+				}
+			}
+		}
+
 		public bool ShowFilesInAddressBarSuggestions
 		{
 			get => UserSettingsService.AppearanceSettingsService.ShowFilesInAddressBarSuggestions;

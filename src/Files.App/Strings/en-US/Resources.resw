@@ -4776,4 +4776,7 @@
   <data name="ShowFilesInAddressBarSuggestions" xml:space="preserve">
     <value>Show files in suggestions</value>
   </data>
+  <data name="ShowParentFolderInTabs" xml:space="preserve">
+    <value>Show parent folder in tab titles</value>
+  </data>
 </root>

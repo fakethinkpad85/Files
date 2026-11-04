@@ -35,6 +35,11 @@ namespace Files.App.Data.Contracts
 		/// </summary>
 		bool ShowFilesInAddressBarSuggestions { get; set; }
 
+		/// <summary>
+		/// Gets or sets a value indicating whether tab titles include the parent folder, e.g. "Customer\Offers".
+		/// </summary>
+		bool ShowParentFolderInTabs { get; set; }
+
 		#endregion
 
 		/// <summary>

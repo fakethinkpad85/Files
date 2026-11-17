@@ -67,6 +67,10 @@ namespace Files.App.UserControls
 			InitializeComponent();
 		}
 
+		// The bindings track the app-wide commands, which would otherwise keep the bar alive after its tab closes
+		public void StopTracking()
+			=> Bindings.StopTracking();
+
 		public Visibility ToVisibility(bool value)
 			=> value ? Visibility.Visible : Visibility.Collapsed;
 

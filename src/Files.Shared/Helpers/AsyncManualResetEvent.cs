@@ -15,7 +15,8 @@ public sealed class AsyncManualResetEvent
 		var tcs = m_tcs;
 		var cancelTcs = new TaskCompletionSource<bool>();
 
-		cancellationToken.Register(
+		// Callers poll with a token that lives as long as the folder is open, so each registration must be released
+		using var registration = cancellationToken.Register(
 			s => ((TaskCompletionSource<bool>)s!).TrySetCanceled(), cancelTcs);
 
 		await await Task.WhenAny(tcs.Task, cancelTcs.Task);
@@ -32,7 +33,7 @@ public sealed class AsyncManualResetEvent
 		var tcs = m_tcs;
 		var cancelTcs = new TaskCompletionSource<bool>();
 
-		cancellationToken.Register(
+		using var registration = cancellationToken.Register(
 			s => ((TaskCompletionSource<bool>)s!).TrySetCanceled(), cancelTcs);
 
 		return await await Task.WhenAny(tcs.Task, cancelTcs.Task, Delay(milliseconds));

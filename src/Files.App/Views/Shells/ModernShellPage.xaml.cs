@@ -267,6 +267,7 @@ namespace Files.App.Views.Shells
 		public override void Dispose()
 		{
 			Bindings.StopTracking();
+			StatusBar.StopTracking();
 			ContentChanged -= ModernShellPage_ContentChanged;
 			ToolbarViewModel.RefreshWidgetsRequested -= ModernShellPage_RefreshWidgetsRequested;
 			if (ShellViewModel is not null)

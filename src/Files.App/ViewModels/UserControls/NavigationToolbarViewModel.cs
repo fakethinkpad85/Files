@@ -996,6 +996,9 @@ namespace Files.App.ViewModels.UserControls
 
 		public async Task PopulateOmnibarSuggestionsForPathMode()
 		{
+			// Every keystroke starts a lookup; on a network share an earlier one can finish last and must not overwrite
+			var requestedPathText = PathText;
+
 			var result = await SafetyExtensions.IgnoreExceptions((Func<Task<bool>>)(async () =>
 			{
 				List<OmnibarPathModeSuggestionModel> newSuggestions = [];
@@ -1053,6 +1056,9 @@ namespace Files.App.ViewModels.UserControls
 					}
 				}
 
+				if (PathText != requestedPathText)
+					return true;
+
 				// If there are no suggestions, show "No suggestions"
 				if (newSuggestions.Count is 0)
 					return false;
@@ -1100,7 +1106,7 @@ namespace Files.App.ViewModels.UserControls
 					=> new(folder.Path, folder.Item!.DisplayName);
 			}));
 
-			if (!result)
+			if (!result && PathText == requestedPathText)
 			{
 				AddNoResultsItem();
 			}
